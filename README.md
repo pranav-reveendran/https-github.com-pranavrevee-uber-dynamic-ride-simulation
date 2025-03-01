@@ -3,6 +3,100 @@
 ## Project Overview
 A distributed, scalable simulation of the Uber ride-hailing platform, built for a data engineering distributed systems course. The system models real-world Uber operations, including dynamic pricing, driver/customer management, billing, and analytics, using a modern 3-tier architecture.
 
+---
+
+## Architecture Diagram
+
+```mermaid
+%% System Architecture
+ graph TD
+  subgraph Client
+    A[React App]
+  end
+  subgraph API Gateway
+    B[Express REST API]
+  end
+  subgraph Microservices
+    C1[Driver Service]
+    C2[Customer Service]
+    C3[Billing Service]
+    C4[Admin Service]
+    C5[Rides Service]
+  end
+  subgraph Messaging
+    D[Kafka Broker]
+  end
+  subgraph Databases
+    E1[MySQL]
+    E2[MongoDB]
+    F[Redis]
+  end
+  A-->|REST|B
+  B-->|REST|C1
+  B-->|REST|C2
+  B-->|REST|C3
+  B-->|REST|C4
+  B-->|REST|C5
+  C1-->|Kafka|D
+  C2-->|Kafka|D
+  C3-->|Kafka|D
+  C4-->|Kafka|D
+  C5-->|Kafka|D
+  D-->|Kafka|C1
+  D-->|Kafka|C2
+  D-->|Kafka|C3
+  D-->|Kafka|C4
+  D-->|Kafka|C5
+  C1-->|SQL|E1
+  C2-->|SQL|E1
+  C3-->|SQL|E1
+  C4-->|SQL|E1
+  C5-->|SQL|E1
+  C1-->|NoSQL|E2
+  C2-->|NoSQL|E2
+  C3-->|NoSQL|E2
+  C4-->|NoSQL|E2
+  C5-->|NoSQL|E2
+  C1-->|Cache|F
+  C2-->|Cache|F
+  C3-->|Cache|F
+  C4-->|Cache|F
+  C5-->|Cache|F
+```
+
+---
+
+## Entity-Relationship Diagram
+
+```mermaid
+erDiagram
+    DRIVER ||--o{ RIDES : drives
+    CUSTOMER ||--o{ RIDES : books
+    DRIVER ||--o{ BILLING : earns
+    CUSTOMER ||--o{ BILLING : pays
+    RIDES ||--o{ BILLING : generates
+    ADMIN ||--o{ DRIVER : manages
+    ADMIN ||--o{ CUSTOMER : manages
+```
+
+---
+
+## Quickstart Flow
+
+```mermaid
+flowchart TD
+    A[User clones repo] --> B[Installs dependencies]
+    B --> C[Configures .env]
+    C --> D[Runs backend]
+    C --> E[Runs frontend]
+    D --> F[Backend services up]
+    E --> G[Frontend UI up]
+    F --> H[User interacts with app]
+    G --> H
+```
+
+---
+
 ## Features
 - **Driver, Customer, Billing, Admin, and Rides modules**
 - Dynamic pricing algorithm using ML and Kaggle Uber Fares dataset
@@ -21,10 +115,6 @@ A distributed, scalable simulation of the Uber ride-hailing platform, built for 
 - **Database:** MySQL (core), MongoDB (media, reviews)
 - **Messaging:** Kafka
 - **Caching:** Redis
-
-```
-Client (React) <-> REST API (Express) <-> Kafka <-> Microservices <-> MySQL/MongoDB/Redis
-```
 
 ## Folder Structure
 ```
